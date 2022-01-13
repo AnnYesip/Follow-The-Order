@@ -23,14 +23,12 @@ enum GameResult: String {
         }
     }
     
-    var commentLabel: String {
+    var commentLabel: String? {
         switch self {
-        case .win:
-            return " "
         case .gameOver:
             return "Game Over"
-        case .nextLevel:
-            return " "
+        default:
+            return nil
         }
     }
     

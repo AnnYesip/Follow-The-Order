@@ -8,7 +8,8 @@
 import SpriteKit
 
 final class MenuScene: SKScene {
-    
+    let background = SKSpriteNode(imageNamed: "background")
+    let score = SKLabelNode(fontNamed: "AmericanTypewriter")
     private var playButton = SKSpriteNode()
     private let bestResult = UserDefaults.standard.integer(forKey: "bestResult")
     
@@ -19,15 +20,13 @@ final class MenuScene: SKScene {
     
     // MARK: - setup scene
     private func start() {
-        let background = SKSpriteNode(imageNamed: "menuBackground")
         background.position = CGPoint(x: frame.size.width / 2, y: frame.size.height / 2)
         background.zPosition = -1
         addChild(background)
         
-        let score = SKLabelNode(fontNamed: "Chalkduster")
-        score.text = "Best score: \(bestResult)"
-        score.fontSize = 30
-        score.fontColor = SKColor.green
+        score.text = "\(Strings.bestScore) \(bestResult)"
+        score.fontSize = 35
+        score.fontColor = .green
         score.position = CGPoint(x: self.size.width / 2, y: self.size.height - 150)
         
         addChild(score)
@@ -41,18 +40,20 @@ final class MenuScene: SKScene {
     // MARK: - touchesBegan
     override func touchesBegan(_ touches: Set<UITouch>,
                                with event: UIEvent?) {
-        if let touch = touches.first {
-            let pos = touch.location(in: self)
-            let node = self.atPoint(pos)
-            
-            if node == playButton {
-                if view != nil {
-                    let transition:SKTransition = SKTransition.fade(withDuration: 1)
-                    let scene:SKScene = GameScene(size: self.size)
-                    self.view?.presentScene(scene, transition: transition)
-                }
-            }
+        
+        guard let touch = touches.first else { return }
+        let pos = touch.location(in: self)
+        let node = self.atPoint(pos)
+        guard view != nil else { return }
+        
+        if node == playButton {
+            let transition: SKTransition = SKTransition.fade(withDuration: 1)
+            let scene: SKScene = GameScene(size: self.size, viewModel: GameViewModel())
+            //                    let scene: SKScene = ResultScene(size: self.size, viewModel: ResultViewModel(), result: .gameOver)
+            self.view?.presentScene(scene, transition: transition)
         }
+        guard view != nil else { return }
+        
     }
     
     deinit {
